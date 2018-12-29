@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c299fd7c6ab9fc3b1a3577ec40855d0b",
-    "content-hash": "96098e473b028cdb2529580554a1ae3e",
+    "hash": "6f5e2f8dbbd4b944674a6191ffbf4a52",
+    "content-hash": "2ad0bdf0c0ef265a9b3d3c2cce117218",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -152,6 +152,59 @@
                 "parser"
             ],
             "time": "2018-03-08 01:11:30"
+        },
+        {
+            "name": "ixudra/curl",
+            "version": "6.16.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ixudra/curl.git",
+                "reference": "1ab270e48082ee6e7f32fa72412c2c81eb974516"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ixudra/curl/zipball/1ab270e48082ee6e7f32fa72412c2c81eb974516",
+                "reference": "1ab270e48082ee6e7f32fa72412c2c81eb974516",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": ">=4.0",
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Ixudra\\Curl\\CurlServiceProvider"
+                    ],
+                    "aliases": {
+                        "Curl": "Ixudra\\Curl\\Facades\\Curl"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Ixudra\\Curl\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jan Oris",
+                    "email": "jan.oris@ixudra.be"
+                }
+            ],
+            "description": "Custom PHP Curl library for the Laravel 5 framework - developed by Ixudra",
+            "homepage": "http://ixudra.be",
+            "keywords": [
+                "Ixudra",
+                "curl",
+                "laravel"
+            ],
+            "time": "2017-12-08 14:31:13"
         },
         {
             "name": "jakub-onderka/php-console-color",

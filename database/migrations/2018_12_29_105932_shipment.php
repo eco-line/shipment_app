@@ -13,12 +13,12 @@ class Shipment extends Migration
      */
     public function up()
     {
-        Schema::create('shipment', function (Blueprint $table) {
+        Schema::create('shipments', function (Blueprint $table) {
             $table->increments('id');
             
             $table->string('awb');
             $table->index('awb');
-            
+
             $table->integer('pickup_pincode');
             $table->integer('drop_pincode');
             $table->string('order_no');
@@ -29,6 +29,7 @@ class Shipment extends Migration
             $table->string('remarks');
             $table->string('current_location');
 
+            $table->string('status_updated_at');
             $table->timestamps();
         });
     }
@@ -40,6 +41,6 @@ class Shipment extends Migration
      */
     public function down()
     {
-        Schema::drop('shipment');
+        Schema::drop('shipments');
     }
 }
