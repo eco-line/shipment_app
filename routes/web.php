@@ -16,3 +16,6 @@ Route::get('/', function () {
 });
 
 Route::get('/tracking/{awb}', 'v1\Shipment\ShipmentHistoryController@get_tracking');
+
+Route::get('/probability', 'v1\Shipment\PredictionController@predict_ofd'); //predict_out_for_delivery
+
