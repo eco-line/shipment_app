@@ -15,18 +15,17 @@ class ShipmentHistory extends Migration
     {
         Schema::create('shipments_history', function (Blueprint $table) {
             $table->increments('id');
-            
-            $table->integer('shipment_id')->unsigned();
-            $table->index('shipment_id');
-            $table->foreign('shipment_id')->references('id')->on('shipments')->onDelete('cascade');
 
-            $table->integer('status_code');
-            $table->string('status');
-            $table->string('status_description');
-            $table->string('remarks');
-            $table->string('location');
+            $table->string('awb')->nullable();
+            $table->index('awb');
 
-            $table->string('status_updated_at');
+            $table->string('status_code')->nullable();
+            $table->string('status')->nullable();
+            $table->string('status_description')->nullable();
+            $table->string('remarks')->nullable();
+            $table->string('location')->nullable();
+
+            $table->timestamp('status_updated_at')->nullable();
             $table->timestamps();
         });
     }

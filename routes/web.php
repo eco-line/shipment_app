@@ -15,6 +15,4 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/data', function () {
-    return view('welcome');
-});
+Route::get('/tracking/{awb}', 'v1\Shipment\ShipmentHistoryController@get_tracking');

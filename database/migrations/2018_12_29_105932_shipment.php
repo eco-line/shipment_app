@@ -16,20 +16,20 @@ class Shipment extends Migration
         Schema::create('shipments', function (Blueprint $table) {
             $table->increments('id');
             
-            $table->string('awb');
+            $table->string('awb')->nullable();
             $table->index('awb');
 
-            $table->integer('pickup_pincode');
-            $table->integer('drop_pincode');
-            $table->string('order_no');
+            $table->integer('pickup_pincode')->nullable();
+            $table->integer('drop_pincode')->nullable();
+            $table->string('order_no')->nullable();
 
-            $table->integer('current_status_code');
-            $table->string('current_status');
-            $table->string('current_status_description');
-            $table->string('remarks');
-            $table->string('current_location');
+            $table->string('current_status_code')->nullable();
+            $table->string('current_status')->nullable();
+            $table->string('current_status_description')->nullable();
+            $table->string('remarks')->nullable();
+            $table->string('current_location')->nullable();
 
-            $table->string('status_updated_at');
+            $table->timestamp('status_updated_at')->nullable();
             $table->timestamps();
         });
     }
