@@ -14,6 +14,7 @@ class PredictionController extends Controller
 	const ONEPINCODES_WT = 0.25; //where only one of the two pincodes match
 
 	const OUTFORDELIVERY = 305;
+	const GETLIMIT = 500;
 
     public function predict_ofd(){ //predict_out_for_delivery
     	$pickup_pincode = Input::get('pickup_pincode');
@@ -28,7 +29,7 @@ class PredictionController extends Controller
     	$current_status = $this->fetch_current_shipment_status($awb);
 
 		$probability = $this->calculate_probability($pickup_pincode,$drop_pincode,$awb,$current_status);    	
-    	return array('status' => 200, 'message' => "Probability of next day out for delivery is $probability");
+    	return array('status' => 200, 'message' => "Probability of next day out for delivery is $probability %");
     }
 
     public function fetch_current_shipment_status($awb){
@@ -44,29 +45,39 @@ class PredictionController extends Controller
 
     public function calculate_probability($pickup_pincode,$drop_pincode,$awb,$current_status){
     	$current_status_code = $current_status->status_code;
-    	// if($current_status_code >= self::OUTFORDELIVERY){
-    	// 	return array('status' => 200, 'message' => 'Shipment is already in out of delivery or further state.');
-    	// }
+    	if($current_status_code >= self::OUTFORDELIVERY){
+    		return array('status' => 200, 'message' => 'Shipment is already in out of delivery or further state.');
+    	}
     	
-    	// $both_pincodes_probab = $this->find_pincodes_probability($pickup_pincode,$drop_pincode,$current_status_code,self::BOTHPINCODES_WT);
+    	$both_pincodes_probab = $this->find_pincodes_probability($pickup_pincode,$drop_pincode,$current_status_code,self::BOTHPINCODES_WT);
     	$pickup_pincode_probab = $this->find_pincodes_probability($pickup_pincode,0,$current_status_code,self::ONEPINCODES_WT);
-    	print_r($pickup_pincode_probab);die;
 		$drop_pincode_probab = $this->find_pincodes_probability(0,$drop_pincode,$current_status_code,self::ONEPINCODES_WT);
 
-		return $both_pincodes_probab + $pickup_pincode_probab + $drop_pincode_probab;
+		return ($both_pincodes_probab + $pickup_pincode_probab + $drop_pincode_probab)*100;
     }
 
-    public function find_pincodes_probability($pickup_pincode,$drop_pincode,$current_status_code,$weight){    	
-    	$time_diff_both = $this->pincodes_data($pickup_pincode,$drop_pincode,$current_status_code);
-
+    public function find_pincodes_probability($pickup_pincode,$drop_pincode,$current_status_code,$weight){
+    	//fetch data in chunks of 500
+    	$offset = 0;
+    	$limit = self::GETLIMIT;
+    	
     	$within_day = 0;
     	$total_time = 0;
-    	foreach ($time_diff_both as $single_time_diff) {
-    		if($single_time_diff <= 24){
-    			$within_day = $within_day + $single_time_diff;
+
+    	while(1){
+    		$time_diff = $this->pincodes_data($pickup_pincode,$drop_pincode,$current_status_code,$limit,$offset);
+    		if(empty($time_diff)){
+    			break;
     		}
-    		$total_time = $total_time + $single_time_diff;
+    		foreach ($time_diff as $single_time_diff) {
+				if($single_time_diff <= 24){
+					$within_day = $within_day + $single_time_diff;
+				}
+				$total_time = $total_time + $single_time_diff;
+    		}
+    		$offset = $offset + $limit;
     	}
+
     	if($total_time != 0){
 	    	$probab = $within_day/$total_time;
 	    	
@@ -77,8 +88,8 @@ class PredictionController extends Controller
     	}
     }
 
-    public function pincodes_data($pickup_pincode,$drop_pincode,$current_status_code){
-    	$similar_data = (new ShipmentHistory())->find_similar_data($pickup_pincode,$drop_pincode,$current_status_code,self::OUTFORDELIVERY);
+    public function pincodes_data($pickup_pincode,$drop_pincode,$current_status_code,$limit,$offset){
+    	$similar_data = (new ShipmentHistory())->find_similar_data($pickup_pincode,$drop_pincode,$current_status_code,self::OUTFORDELIVERY,$limit,$offset);
     	$awbs = array();
     	$time_diff = array();
 

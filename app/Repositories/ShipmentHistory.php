@@ -16,7 +16,7 @@ class ShipmentHistory extends Model
 	
 	protected static $unguarded = true;
 
-    public function find_similar_data($pickup_pincode=0,$drop_pincode=0,$status_code,$out_for_delivery){
+    public function find_similar_data($pickup_pincode=0,$drop_pincode=0,$status_code,$out_for_delivery,$limit,$offset){
     	//305 status code is out for delivery
     	$data = self::join('shipments','shipments.awb','=','shipments_history.awb')
     									->where(function ($query) use ($status_code,$out_for_delivery){
@@ -32,9 +32,9 @@ class ShipmentHistory extends Model
 		if($drop_pincode != 0){
 			$data = $data->where('shipments.drop_pincode', $drop_pincode);
 		}
-				 				
-		$data = $data->get(); 
-		print_r($data);die;
+
+		$data = $data->take($limit)->skip($offset)->get();
+
 		return $data->toArray();   	
     }
 }
